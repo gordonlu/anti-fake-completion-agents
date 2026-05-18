@@ -196,6 +196,17 @@ Unverified behavior must not be presented as completed behavior.
 
 ---
 
+## Failure Taxonomy
+
+- Fake Completion
+- Semantic Drift
+- Reliability Illusion
+- Verification Gap
+- Partial Failure Corruption
+- Project-State Hallucination
+
+---
+
 ## Common Failure Patterns
 
 | Pattern                     | Example                                     |
