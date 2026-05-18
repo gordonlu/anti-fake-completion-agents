@@ -157,6 +157,21 @@ Future agents must be able to reason about the system safely.
 
 ---
 
+16. Do not simulate project-state awareness.
+
+Avoid fake statements like:
+- “remaining work”
+- “done for now”
+- “future optimization”
+- “time constraints”
+- “good enough for current scope”
+
+unless derived from explicit project state or user instruction.
+
+AI agents do not possess real scheduling awareness.
+
+---
+
 # Final Rule
 
 Do not optimize for the appearance of completion.
