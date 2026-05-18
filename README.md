@@ -1,43 +1,112 @@
 # anti-fake-completion-agents
 
-Prevent fake completion, semantic drift, and hidden failure in AI-generated software.
+AI-generated code tends toward appearing complete before being correct.
+
+Prevent:
+
+* fake completion
+* semantic drift
+* hidden failure
+* reliability illusion
+
+This repository provides semantic integrity rules for AI coding agents.
+
+![anti-fake-completion-agents header](./assets/header.png)
 
 ---
 
-## What This Is
+## What Is Fake Completion?
 
-`anti-fake-completion-agents` is a compact set of behavioral rules for AI coding agents.
+AI coding agents optimize heavily for appearing complete.
 
-It focuses on preventing systems that:
-- appear complete,
-- compile successfully,
-- pass shallow tests,
+This often produces systems that:
+
+* compile successfully
+* pass shallow tests
+* look correct in demos
+* generate confident explanations
 
 while remaining semantically broken underneath.
 
-The goal is long-term semantic integrity, not superficial completion.
+Examples:
+
+* fake retries
+* fake async
+* fake streaming
+* placeholder persistence
+* swallowed errors
+* hidden stubs
+* semantic drift
+* partial failure corruption
+* fake validation
+* project-state hallucination
+
+The most dangerous AI-generated bugs are often semantic, not syntactic.
 
 ---
 
-## Important
+## Core Principle
+
+Compilation is not correctness.
+
+Passing tests is not correctness.
+
+Demo success is not correctness.
+
+A system is only complete when:
+
+* semantics remain correct
+* failures remain observable
+* state remains consistent
+* guarantees survive real execution conditions
+
+Behavior matters more than appearance.
+
+---
+
+## Philosophy
+
+Explicit failure is better than fake success.
+
+Smaller correct systems are better than larger unreliable systems.
+
+AI-generated software should optimize for:
+
+* semantic correctness
+* observable failure
+* runtime consistency
+* recovery integrity
+* maintainability
+* long-term reliability
+
+not:
+
+* superficial completion
+* green demos
+* generated complexity
+* narrative progress
+
+---
+
+## AGENTS.md Usage
 
 This repository is designed to be APPENDED to existing `AGENTS.md` files.
 
 It is NOT intended to replace:
-- project-specific instructions
-- build commands
-- architecture docs
-- framework conventions
-- CI workflows
-- repository structure guidance
 
-Think of this project as a behavioral overlay for AI coding agents.
+* project-specific instructions
+* build commands
+* architecture docs
+* framework conventions
+* CI workflows
+* repository structure guidance
 
 Use:
+
 ```text
 AGENTS.md                  -> project rules
 ANTI_FAKE_AGENTS.md        -> semantic integrity rules
-````
+```
 
 Example:
 
@@ -57,30 +126,26 @@ All agents working on this repository must additionally follow:
 
 ---
 
-## What Is Fake Completion?
+## Included
 
-AI coding agents optimize heavily for appearing complete.
+The repository includes:
 
-This creates systems that:
+* compact semantic-integrity overlays
+* full semantic-integrity doctrine
+* fake completion anti-patterns
+* verification rules
+* reliability-oriented agent guidance
+* semantic failure models
 
-* look correct in demos
-* produce expected output
-* pass weak tests
-* compile successfully
+Designed for:
 
-while hiding:
-
-* fake retries
-* fake async
-* fake streaming
-* swallowed errors
-* placeholder persistence
-* hidden stubs
-* silent degradation
-* semantic drift
-* partial failure corruption
-
-Fake completion is one of the most common failure modes in AI-generated software.
+* Claude Code
+* Cursor
+* Codex
+* OpenHands
+* Roo Code
+* Copilot
+* other AI coding agents
 
 ---
 
@@ -106,46 +171,45 @@ This is fake completion.
 
 ---
 
-## Included
+## Verification Matters
 
-The repository currently contains:
+Do not claim functionality without verification.
 
-* compact `AGENTS.md` overlays
-* semantic integrity rules
-* fake completion anti-patterns
-* behavioral failure examples
-* reliability-oriented agent guidance
+Verification should include:
 
-Designed for:
+* failure-path tests
+* restart/recovery tests
+* persistence checks
+* ordering checks
+* concurrency checks
+* cleanup verification
+* state validation
 
-* Claude Code
-* Cursor
-* Codex
-* Copilot
-* OpenClaw
-* Roo Code
-* other AI coding agents
+Do not rely on:
 
----
+* successful compilation
+* happy-path demos
+* superficial tests
+* generated confidence
 
-## Core Philosophy
-
-Behavior matters more than appearance.
-
-Explicit failure is better than fake success.
-
-Smaller correct systems are better than larger unreliable systems.
+Unverified behavior must not be presented as completed behavior.
 
 ---
 
-## Future Directions
+## Common Failure Patterns
 
-* semantic integrity benchmarks
-* fake completion test suites
-* agent reliability evaluation
-* semantic drift detection
-* static analysis tooling
-* behavioral verification tooling
+| Pattern                     | Example                                     |
+| --------------------------- | ------------------------------------------- |
+| Fake Completion             | looks finished but semantics are broken     |
+| Fake Retry                  | retry loop without retry semantics          |
+| Fake Async                  | blocking system labeled async               |
+| Fake Streaming              | buffer-all then “stream”                    |
+| Placeholder Persistence     | in-memory “database”                        |
+| Semantic Drift              | dev/prod behave differently                 |
+| Partial Failure Corruption  | cache updated, DB write fails               |
+| Fake Validation             | validation that enforces nothing            |
+| Queue Loss                  | message removed before processing completes |
+| Project-State Hallucination | invented roadmap or remaining work          |
 
 ---
 
@@ -153,12 +217,13 @@ Smaller correct systems are better than larger unreliable systems.
 
 AI-generated software is becoming normal.
 
-Most tooling optimizes for:
+Most tooling currently optimizes for:
 
 * speed
 * token throughput
-* passing tests
 * generating more code
+* passing tests
+* appearing productive
 
 This project focuses on a different problem:
 
@@ -166,9 +231,18 @@ How do we stop AI-generated systems from slowly becoming untrustworthy?
 
 ---
 
+## Future Directions
+
+* semantic integrity benchmarks
+* fake completion test suites
+* semantic drift detection
+* behavioral verification tooling
+* AI reliability evaluation
+* runtime semantic analysis
+* failure-mode taxonomies
+
+---
+
 ## License
 
 MIT
-
-```
-```
