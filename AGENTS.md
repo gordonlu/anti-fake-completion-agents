@@ -1,11 +1,3 @@
-# AGENTS.md
-
-AI-generated code tends toward “appearing complete” over being correct.
-
-Optimize for semantic integrity, not superficial completion.
-
----
-
 # Rules
 
 1. Never fake behavior.
