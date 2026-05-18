@@ -1,10 +1,18 @@
+AI-generated code tends toward appearing complete before being correct.
+
+Optimize for semantic integrity, not superficial completion.
+
+---
+
 # Rules
 
 1. Never fake behavior.
 - no hardcoded success
-- no placeholder logic
-- no fake retries/streaming/async
-- no mock behavior in production
+- no placeholder implementations
+- no fake retries
+- no fake async
+- no fake streaming
+- no mock logic in production paths
 
 Fail explicitly if incomplete.
 
@@ -16,36 +24,42 @@ Fail explicitly if incomplete.
 - no empty fallbacks
 - no fake defaults
 
-Errors must stay observable.
+Errors must remain observable.
 
 ---
 
-3. Verify behavior, not output shape.
-Do not trust:
+3. Do not claim functionality without verification.
+
+Verify using:
+- failure-path tests
+- persistence checks
+- restart/recovery tests
+- ordering checks
+- cleanup checks
+- concurrency checks
+- state validation
+
+Do not rely on:
 - compilation success
 - demo output
 - shallow tests
 
-Verify:
-- state changes
-- persistence
-- retries
-- cleanup
-- ordering
-- failure paths
+Unverified behavior must not be presented as completed behavior.
 
 ---
 
 4. All execution paths must preserve semantics.
+
 Avoid semantic drift between:
 - dev/prod
 - test/real
-- preview/live
 - local/remote
+- preview/live
 
 ---
 
 5. Unsupported behavior must fail loudly.
+
 Prefer:
 ```ts
 throw new Error("NOT_IMPLEMENTED")
@@ -72,45 +86,51 @@ Do not:
 Protect against:
 
 * partial writes
-* split state
-* lost rollback
 * queue loss
+* lost rollback
 * cache/db divergence
+* split-brain state
 
 ---
 
-7. Concurrency must be real.
-   Do not label blocking or sequential systems as:
+7. Concurrency claims must match runtime reality.
+
+Do not label blocking or sequential systems as:
 
 * async
 * parallel
-* streaming
+* concurrent
 * non-blocking
 
 ---
 
 8. Streaming must be incremental.
-   Do not buffer entire results before “streaming”.
+
+Do not buffer entire results before “streaming”.
 
 ---
 
 9. Persistence must actually persist.
-   In-memory state is not persistence.
 
-Verify recovery after restart.
+In-memory state is not persistence.
+
+Verify persistence after restart.
 
 ---
 
 10. UTF-8 correctness is mandatory.
-    Do not assume:
 
-* 1 byte == 1 char
+Do not assume:
+
+* 1 byte == 1 character
 * string length == display width
+* slicing == character-safe
 
 ---
 
 11. Every resource needs cleanup.
-    Bound:
+
+Bound:
 
 * memory
 * queues
@@ -124,49 +144,54 @@ Prevent unbounded growth.
 ---
 
 12. Ordering guarantees matter.
-    FIFO must actually be FIFO.
+
+FIFO must actually be FIFO.
 
 ---
 
 13. Security boundaries must be enforced by runtime behavior.
-    Validation that does not enforce anything is fake validation.
+
+Validation that does not enforce anything is fake validation.
 
 ---
 
 14. Prefer smaller correct systems.
-    Avoid:
 
-* hidden coupling
+Avoid:
+
 * duplicated logic
+* hidden coupling
 * speculative abstraction
 * unnecessary complexity
 
 ---
 
 15. Document non-obvious behavior.
-    Especially:
 
-* concurrency
+Especially:
+
 * retries
 * caching
 * persistence
 * synchronization
-* fallback logic
+* concurrency
+* fallback behavior
 
 Future agents must be able to reason about the system safely.
 
 ---
 
-16. Do not simulate project-state awareness.
+16. Do not fake project-state awareness.
 
-Avoid fake statements like:
-- “remaining work”
-- “done for now”
-- “future optimization”
-- “time constraints”
-- “good enough for current scope”
+Avoid invented claims about:
 
-unless derived from explicit project state or user instruction.
+* remaining work
+* future tasks
+* priorities
+* deadlines
+* “good enough”
+* “later optimization”
+* time constraints
 
 AI agents do not possess real scheduling awareness.
 
@@ -183,3 +208,6 @@ Optimize for:
 * runtime consistency
 * maintainability
 * long-term reliability
+
+```
+```
