@@ -1,490 +1,250 @@
-AI-generated code tends toward appearing complete before being correct.
+# Semantic Integrity Rules
 
-Optimize for semantic integrity, not superficial completion.
+AI-generated code often appears complete before it is correct.
 
----
+Optimize for **semantic integrity**, not superficial completion.
 
-# Core Principle
+Compilation, green tests, clean logs, and successful demos are evidence—not proof.
 
-Compilation is not correctness.
-
-Passing tests is not correctness.
-
-Demo success is not correctness.
-
-A system is only complete when:
-- semantics remain correct
-- failures remain observable
-- state remains consistent
-- behavior survives real execution conditions
+A change is complete only when its behavior is correct under real execution, failure, recovery, and long-term operation.
 
 ---
 
-# Primary Failure Mode
+## 1. Verify semantics, not appearance
 
-The dominant failure mode of AI-generated software is not syntax failure.
+Do not treat any of the following as sufficient proof:
 
-It is semantic illusion.
+* successful compilation
+* passing happy-path tests
+* expected output
+* clean logs
+* absence of crashes
+* successful demos
+* large amounts of generated code
 
-The system:
-- appears complete
-- behaves correctly in shallow paths
-- produces expected output
-
-while hiding:
-- invalid assumptions
-- silent degradation
-- state corruption
-- fake guarantees
-- unverified behavior
-- incomplete execution semantics
-
-This document exists to reduce those failures.
+Ask whether the implementation preserves its intended meaning under actual runtime conditions.
 
 ---
 
-# Thinking Rules
+## 2. Do not stop at the first success
 
-## 1. Do not stop at first working output.
+After the happy path works, examine:
 
-Working output is not proof of correctness.
+* timeout and cancellation
+* partial failure
+* retry and replay
+* restart and recovery
+* concurrent execution
+* ordering guarantees
+* persistence behavior
+* cleanup and resource release
 
-Continue reasoning about:
-- failure paths
-- rollback paths
-- restart behavior
-- concurrency behavior
-- cleanup behavior
-- ordering guarantees
-- persistence guarantees
-- semantic consistency
-
----
-
-## 2. Avoid premature convergence.
-
-Do not assume:
-- “good enough”
-- “probably correct”
-- “works in practice”
-- “close enough”
-- “can optimize later”
-
-Continue searching for:
-- hidden assumptions
-- semantic mismatch
-- edge conditions
-- partial failure states
-- invalid guarantees
+Local success can still hide global corruption.
 
 ---
 
-## 3. Reason about systems, not isolated functions.
+## 3. Never fake behavior
 
-Every component exists inside:
-- runtime state
-- persistence state
-- ordering constraints
-- concurrency constraints
-- recovery semantics
-- external failure conditions
+Do not simulate or approximate functionality while presenting it as complete.
 
-Local correctness can still produce global corruption.
+This includes fake:
 
----
+* retries
+* async or parallel execution
+* streaming
+* persistence
+* validation
+* recovery
+* rollback
+* cleanup
+* success responses
 
-## 4. Distinguish appearance from semantics.
-
-The following do NOT prove correctness:
-- successful compilation
-- green tests
-- successful demos
-- matching output
-- clean logs
-- absence of crashes
-
-Correctness requires semantic verification.
-
----
-
-## 5. Explicitly identify unverified assumptions.
-
-For every important behavior, ask:
-- what assumptions exist?
-- what has not been verified?
-- what can drift over time?
-- what depends on hidden runtime behavior?
-- what breaks after restart?
-- what breaks under concurrency?
-- what breaks under partial failure?
-
-Unknown assumptions are major risk sources.
-
----
-
-# Behavioral Rules
-
-## 6. Never fake behavior.
-
-Do not implement:
-- fake retries
-- fake async
-- fake streaming
-- fake persistence
-- fake validation
-- fake concurrency
-- fake recovery
-- fake cleanup
-
-Do not simulate correctness.
-
-Fail explicitly if incomplete.
-
----
-
-## 7. Do not hide failure.
-
-Avoid:
-- silent catch
-- ignored errors
-- swallowed exceptions
-- hidden fallback behavior
-- invisible degradation
-- fake defaults
-
-Failures must remain observable.
-
----
-
-## 8. Unsupported behavior must fail loudly.
-
-Prefer:
-```ts
-throw new Error("NOT_IMPLEMENTED")
-````
-
-over:
+Unsupported behavior must fail explicitly.
 
 ```ts
-return true
-return {}
-return []
-return ""
+throw new Error("NOT_IMPLEMENTED");
 ```
 
-Explicit failure is safer than false success.
+Do not return empty values, defaults, or success states that conceal missing behavior.
 
 ---
 
-## 9. Do not fake project-state awareness.
+## 4. Keep failures observable
 
-Avoid invented claims about:
+Do not hide failure through:
 
-* remaining work
-* future tasks
-* priorities
-* deadlines
-* “later optimization”
-* “done for now”
-* “good enough”
+* swallowed exceptions
+* ignored return values
+* silent fallback
+* automatic degradation without reporting
+* fake defaults
+* incomplete error handling
 
-AI agents do not possess real scheduling awareness.
+A system that fails visibly is safer than one that reports false success.
 
----
+Errors should preserve enough context to diagnose:
 
-## 10. Do not confuse generated structure with real architecture.
-
-Large code volume does not imply:
-
-* correctness
-* maintainability
-* scalability
-* reliability
-
-Generated complexity often hides semantic weakness.
-
-Prefer smaller correct systems.
+* what failed
+* where it failed
+* which state was affected
+* whether retry is safe
+* whether recovery is required
 
 ---
 
-# Verification Rules
+## 5. Protect state across failure boundaries
 
-## 11. Do not claim functionality without verification.
+Never expose partially committed state as completed state.
 
-Verification must include:
+Design explicitly for:
 
-* failure-path tests
-* restart/recovery tests
-* persistence checks
-* cleanup verification
-* ordering verification
-* concurrency verification
-* state validation
-* resource lifecycle validation
+* partial writes
+* queue or event loss
+* cache/source-of-truth divergence
+* duplicate execution
+* lost rollback
+* replay corruption
+* process termination between operations
 
-Do not rely on:
-
-* compilation success
-* superficial tests
-* happy-path execution
-* demo behavior
+When multiple state changes must succeed together, use an enforceable consistency mechanism rather than sequential best effort.
 
 ---
 
-## 12. Unverified behavior must be labeled explicitly.
+## 6. Make runtime claims precise
 
-Do not present:
+Do not claim guarantees the implementation cannot enforce.
 
-* assumptions
-* estimates
-* likely behavior
-* inferred correctness
+Examples:
 
-as verified guarantees.
+* buffering the full result is not streaming
+* spawning a task is not parallel execution
+* writing to memory is not persistence
+* retrying without idempotency is not safe recovery
+* best-effort delivery is not exactly-once
+* approximate ordering is not FIFO
+* a validation function that never rejects is not validation
 
----
-
-## 13. Test failure paths, not only success paths.
-
-Most semantic corruption occurs during:
-
-* timeout
-* cancellation
-* restart
-* retry
-* partial write
-* partial recovery
-* concurrent execution
-* resource exhaustion
-
-Failure behavior matters more than happy-path behavior.
+Security, concurrency, persistence, and ordering guarantees must exist in runtime behavior—not only in names, interfaces, comments, or documentation.
 
 ---
 
-## 14. Persistence claims must survive restart.
+## 7. Preserve semantics across execution paths
 
-In-memory success is not persistence.
+Equivalent operations should preserve equivalent meaning across:
+
+* development and production
+* test and live environments
+* mock and real integrations
+* local and remote execution
+* cached and uncached paths
+* normal and recovery paths
+* interpreter and compiler implementations
+
+Avoid duplicated semantic logic. Prefer:
+
+* one source of truth
+* canonical execution paths
+* shared validation
+* centralized state transitions
+* explicit invariants
+
+Duplicated behavior will drift.
+
+---
+
+## 8. Identify uncertainty explicitly
+
+For important behavior, state:
+
+* assumptions being made
+* behavior actually verified
+* behavior still unverified
+* dependencies on external runtime behavior
+* known failure conditions
+* guarantees that cannot currently be enforced
+
+Do not present estimates, assumptions, or likely behavior as verified facts.
+
+Do not invent project status, remaining work, priorities, deadlines, or completion claims. Derive them from repository state, tests, runtime evidence, and user requirements.
+
+---
+
+## 9. Treat lifecycle behavior as correctness
+
+Correctness must survive time, not just one execution.
 
 Verify:
 
 * process restart
-* reload behavior
 * crash recovery
-* partial write recovery
+* reconnect
+* delayed execution
+* retry and replay
+* concurrent mutation
+* resource exhaustion
+* long-running operation
+* cleanup after success and failure
 
----
-
-## 15. Concurrency claims must match runtime reality.
-
-Do not label systems as:
-
-* async
-* concurrent
-* parallel
-* non-blocking
-
-unless runtime semantics actually guarantee it.
-
----
-
-## 16. Streaming must be incremental.
-
-Buffering everything before output is not streaming.
-
-Streaming semantics require:
-
-* incremental delivery
-* partial visibility
-* progressive execution
-
----
-
-# Semantic Integrity Rules
-
-## 17. All execution paths must preserve semantics.
-
-Prevent semantic drift between:
-
-* dev/prod
-* local/remote
-* test/live
-* mock/real
-* interpreter/compiler
-* cache/source-of-truth
-
-Equivalent operations must preserve equivalent meaning.
-
----
-
-## 18. State mutations must respect failure boundaries.
-
-Never:
-
-1. mutate visible state
-2. fail later
-3. leave inconsistent state exposed
-
-Protect against:
-
-* partial writes
-* queue loss
-* split-brain state
-* cache/db divergence
-* lost rollback
-* double execution
-* replay corruption
-
----
-
-## 19. Ordering guarantees must be real.
-
-FIFO must actually be FIFO.
-
-Exactly-once must actually be exactly-once.
-
-Do not claim guarantees that runtime behavior cannot enforce.
-
----
-
-## 20. Validation must enforce real constraints.
-
-Validation that never rejects invalid state is fake validation.
-
-Security boundaries must exist in runtime behavior, not comments.
-
----
-
-## 21. Cleanup behavior is part of correctness.
-
-Every system must eventually release:
+Ensure eventual release of:
 
 * memory
+* tasks
 * queues
 * streams
 * listeners
 * handles
 * timers
-* caches
 * subscriptions
+* temporary files
+* cache entries
 
-Unbounded growth is semantic failure.
-
----
-
-# Reliability Rules
-
-## 22. Avoid duplicated semantic logic.
-
-Duplicated logic drifts over time.
-
-Prefer:
-
-* single source of truth
-* shared runtime semantics
-* centralized guarantees
-* canonical execution paths
+Unbounded growth and leaked lifecycle state are correctness failures.
 
 ---
 
-## 23. Runtime behavior is more important than interface shape.
+# Required Verification
 
-Clean APIs can still hide:
+Before claiming a change is complete, verify the relevant categories:
 
-* semantic corruption
-* race conditions
-* persistence failure
-* hidden synchronization bugs
+1. **Primary behavior**
+   The intended operation produces the correct result.
 
-Judge systems by runtime behavior.
+2. **Invalid input**
+   Invalid state is rejected rather than silently accepted.
 
----
+3. **Failure paths**
+   Timeout, cancellation, dependency failure, and partial completion behave safely.
 
-## 24. Recovery behavior must be designed explicitly.
+4. **State consistency**
+   Failed operations do not expose corrupted or misleading state.
 
-Ask:
+5. **Persistence and recovery**
+   Persistent claims survive process restart and interrupted writes.
 
-* what survives crash?
-* what survives retry?
-* what survives replay?
-* what survives reconnect?
-* what survives partial completion?
+6. **Concurrency and ordering**
+   Runtime behavior matches documented guarantees.
 
-Recovery semantics are core semantics.
+7. **Cleanup**
+   Resources are released after success, failure, cancellation, and shutdown.
 
----
+8. **Integration reality**
+   Mocks and tests represent the behavior of real dependencies closely enough to support the claim.
 
-## 25. Temporal correctness matters.
-
-Correctness across time matters more than single execution success.
-
-Systems must remain correct across:
-
-* retries
-* restart
-* reconnection
-* delayed execution
-* concurrent mutation
-* reordered execution
+Not every change requires every category, but omitted categories must be intentionally judged irrelevant—not silently ignored.
 
 ---
 
-# AI-Specific Reliability Risks
+# Completion Protocol
 
-## 26. AI agents optimize for narrative completion.
+Before saying a task is complete, report:
 
-Agents naturally drift toward:
+* what changed
+* what was verified
+* how it was verified
+* what remains unverified
+* known limitations or risks
 
-* summarizing progress
-* appearing productive
-* reducing visible uncertainty
-* declaring completion early
-
-This often conflicts with semantic correctness.
-
----
-
-## 27. Generated confidence is not proof.
-
-Confident explanations do not imply:
-
-* runtime correctness
-* semantic consistency
-* verified behavior
-* production readiness
-
-Confidence must never replace verification.
-
----
-
-## 28. Vocabulary shapes reasoning depth.
-
-Use precise concepts:
-
-* fake completion
-* semantic drift
-* partial failure corruption
-* hidden degradation
-* recovery semantics
-* verification gap
-* project-state hallucination
-
-Precise failure vocabulary improves reasoning quality.
-
----
-
-## 29. Continue reasoning after “success”.
-
-Many failures only appear after:
-
-* scaling
-* restart
-* concurrency
-* persistence
-* retries
-* partial failure
-* long-running execution
-
-Do not terminate reasoning at first success.
+Do not use compilation, test counts, or code volume as substitutes for this evidence.
 
 ---
 
@@ -494,13 +254,11 @@ Do not optimize for the appearance of completion.
 
 Optimize for:
 
-* semantic correctness
+* correct semantics
 * observable failure
-* runtime consistency
-* explicit guarantees
-* maintainability
-* recovery integrity
+* consistent state
+* enforceable guarantees
+* explicit recovery behavior
+* bounded resource use
+* maintainable execution paths
 * long-term reliability
-
-```
-```
