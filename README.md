@@ -5,8 +5,8 @@ AI-generated code often appears complete before it is correct.
 This repository provides semantic integrity rules for AI coding agents, helping prevent:
 
 * fake completion
-* hidden failure
 * semantic drift
+* hidden failure
 * state corruption
 * unverifiable guarantees
 * premature completion claims
@@ -39,6 +39,8 @@ A system may look finished while still containing:
 * guarantees that do not match runtime reality
 
 This is **fake completion**: the appearance of completion without verified semantic integrity.
+
+The most dangerous AI-generated bugs are often semantic, not syntactic.
 
 ---
 
@@ -76,50 +78,61 @@ Behavior matters more than appearance.
 * verify lifecycle, recovery, and cleanup behavior
 * report evidence before declaring completion
 
-The rules favor smaller, correct systems over larger systems with unclear guarantees.
+The rules favor smaller correct systems over larger systems with unclear guarantees.
 
 ---
 
 ## Usage
 
-Use `ANTI_FAKE_AGENTS.md` alongside your project's existing agent instructions.
+`ANTI_FAKE_AGENTS.md` is designed to be added to the instruction file used by your AI coding agent.
 
-It is not a replacement for:
+It does not replace your existing project instructions.
+
+Your existing `AGENTS.md` should continue to define:
 
 * project-specific conventions
-* architecture documentation
 * build and test commands
-* repository structure guidance
-* framework rules
+* architecture constraints
+* framework conventions
+* repository structure
 * CI workflows
-* security policies
+* security requirements
 
-Recommended structure:
+`ANTI_FAKE_AGENTS.md` adds semantic-integrity and anti-fake-completion rules on top of them.
 
-```text
-your-project/
-├── AGENTS.md
-├── ANTI_FAKE_AGENTS.md
-└── ...
+### Option 1: Append the rules
+
+Append the contents of `ANTI_FAKE_AGENTS.md` to your existing `AGENTS.md`:
+
+```bash
+cat ANTI_FAKE_AGENTS.md >> AGENTS.md
 ```
 
-Reference it from your main `AGENTS.md`:
+The resulting instruction file contains both:
+
+```text
+project-specific rules
++
+semantic integrity rules
+```
+
+Review the result afterward to remove duplicated headings or conflicting instructions.
+
+### Option 2: Reference the file
+
+When your AI coding tool supports referenced instruction files, keep the rules separate and add this to your existing `AGENTS.md`:
 
 ```md
-# AGENTS.md
+## Semantic Integrity
 
-All coding agents working in this repository must also follow:
+All coding agents working on this project must also follow:
 
 ./ANTI_FAKE_AGENTS.md
 ```
 
-You can copy the file directly:
+Keeping the file separate makes it easier to reuse and update.
 
-```bash
-curl -O https://raw.githubusercontent.com/gordonlu/anti-fake-completion-agents/main/ANTI_FAKE_AGENTS.md
-```
-
-Then commit it with the rest of your project instructions.
+Instruction-file names and loading behavior differ between coding tools. Use the mechanism supported by your tool.
 
 ---
 
@@ -133,16 +146,16 @@ async function saveUser(user: User): Promise<boolean> {
 }
 ```
 
-This appears reasonable on the successful path.
+This appears correct on the successful path.
 
 But if `db.save()` fails:
 
 * the cache contains the new value
 * the database contains the old value
 * callers may observe inconsistent state
-* the function has no rollback or recovery semantics
+* no rollback or recovery behavior is defined
 
-The function is syntactically valid and may pass shallow tests, but its failure behavior is incomplete.
+The function compiles and may pass shallow tests, but its failure semantics are incomplete.
 
 A correct implementation must explicitly define how cache and durable state remain consistent when either operation fails.
 
@@ -155,14 +168,14 @@ A correct implementation must explicitly define how cache and durable state rema
 | **Fake Completion**             | The implementation looks finished, but required semantics are missing            |
 | **Fake Retry**                  | An operation is repeated without idempotency, backoff, or failure classification |
 | **Fake Async**                  | Blocking work is exposed through an asynchronous interface                       |
-| **Fake Streaming**              | The full result is buffered before any output is delivered                       |
+| **Fake Streaming**              | The complete result is buffered before output begins                             |
 | **Placeholder Persistence**     | In-memory state is presented as durable storage                                  |
 | **Hidden Degradation**          | The system silently falls back to weaker behavior                                |
-| **Semantic Drift**              | Equivalent paths behave differently over time or across environments             |
+| **Semantic Drift**              | Equivalent paths behave differently across environments or over time             |
 | **Partial Failure Corruption**  | One state mutation succeeds while another fails                                  |
-| **Fake Validation**             | Validation exists structurally but does not enforce real constraints             |
-| **Queue Loss**                  | Work is acknowledged or removed before processing is safely completed            |
-| **Verification Gap**            | A behavior is claimed without evidence covering the relevant conditions          |
+| **Fake Validation**             | Validation exists structurally but enforces no real constraint                   |
+| **Queue Loss**                  | Work is removed or acknowledged before processing safely completes               |
+| **Verification Gap**            | Behavior is claimed without evidence covering relevant conditions                |
 | **Project-State Hallucination** | An agent invents completion status, priorities, or remaining work                |
 
 ---
@@ -171,7 +184,7 @@ A correct implementation must explicitly define how cache and durable state rema
 
 Verification should match the claims being made.
 
-Depending on the change, this may include:
+Depending on the change, verification may include:
 
 * primary behavior tests
 * invalid-input tests
@@ -183,7 +196,7 @@ Depending on the change, this may include:
 * cleanup verification
 * real integration checks
 
-Not every change requires every category.
+Not every change requires every verification category.
 
 However, omitted categories should be intentionally judged irrelevant—not silently ignored.
 
@@ -199,7 +212,40 @@ Before declaring a task complete, an agent should report:
 * what remains unverified
 * known limitations or risks
 
-Compilation success, test counts, generated code volume, and confident explanations are not substitutes for this evidence.
+Compilation success, test counts, generated code volume, and confident explanations are not substitutes for evidence.
+
+---
+
+## Philosophy
+
+Explicit failure is better than fake success.
+
+Smaller correct systems are better than larger unreliable systems.
+
+Runtime behavior matters more than interface shape.
+
+Recovery behavior is part of correctness.
+
+Correctness across time matters more than success in a single execution.
+
+AI-generated software should optimize for:
+
+* semantic correctness
+* observable failure
+* consistent state
+* enforceable guarantees
+* recovery integrity
+* bounded resource use
+* maintainable execution paths
+* long-term reliability
+
+Not:
+
+* superficial completion
+* successful demos alone
+* generated complexity
+* narrative progress
+* premature completion claims
 
 ---
 
@@ -213,9 +259,9 @@ The rules are tool-independent and can be used with:
 * GitHub Copilot
 * OpenHands
 * Roo Code
-* other repository-aware coding agents
+* other repository-aware AI coding agents
 
-Actual instruction-loading behavior differs between tools. Reference the file through the mechanism supported by your agent.
+Actual instruction-loading behavior differs between tools.
 
 ---
 
@@ -223,7 +269,6 @@ Actual instruction-loading behavior differs between tools. Reference the file th
 
 ```text
 .
-├── AGENTS.md
 ├── ANTI_FAKE_AGENTS.md
 ├── README.md
 ├── LICENSE
@@ -231,7 +276,7 @@ Actual instruction-loading behavior differs between tools. Reference the file th
     └── header.png
 ```
 
-`ANTI_FAKE_AGENTS.md` contains the reusable semantic integrity rules.
+`ANTI_FAKE_AGENTS.md` is the reusable rule set intended to be appended to, or referenced from, the instruction file used by an AI coding agent.
 
 ---
 
@@ -244,6 +289,7 @@ Most AI coding workflows optimize for:
 * fewer visible errors
 * passing tests
 * rapid task completion
+* apparent productivity
 
 Those goals are useful, but they can reward systems that appear finished before their behavior is trustworthy.
 
@@ -261,6 +307,7 @@ This project focuses on a different question:
 * semantic drift detection
 * completion-claim verification
 * runtime guarantee analysis
+* behavioral reliability tooling
 
 ---
 
