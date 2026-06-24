@@ -1,8 +1,11 @@
 # Semantic Integrity Rules
 
 AI-generated code often appears complete before it is correct.
+
 Optimize for **semantic integrity**, not superficial completion.
+
 Compilation, green tests, clean logs, and successful demos are evidence — not proof.
+
 A change is complete only when its claimed behavior is supported by appropriate evidence.
 
 ---
@@ -219,8 +222,13 @@ Done. All tests pass.
 ## Final Rule
 
 Simulation is allowed.
+
 Unlabelled simulation is not.
+
 Partial implementation is allowed.
+
 False completion is not.
+
 Uncertainty is allowed.
+
 Hidden uncertainty is not.
